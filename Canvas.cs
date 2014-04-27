@@ -66,6 +66,38 @@ namespace CG_Exp2_FillGraphicPrimitive
         private Timer timer;//秒表
 
         /// <summary>
+        /// 图层默认背景色
+        /// </summary>
+        public Color BGColor
+        {
+            get
+            {
+                return bgColor;
+            }
+            set
+            {
+                bgColor = value;
+            }
+        }
+        private Color bgColor;
+
+        /// <summary>
+        /// 图层是否锁定（无法删除）
+        /// </summary>
+        public bool Locked
+        {
+            get
+            {
+                return locked;
+            }
+            set
+            {
+                locked = value;
+            }
+        }
+        private bool locked;
+
+        /// <summary>
         /// 主绘图区
         /// </summary>
         public Bitmap Bmp
@@ -102,20 +134,26 @@ namespace CG_Exp2_FillGraphicPrimitive
         /// </summary>
         /// <param name="width">画布的宽度</param>
         /// <param name="height">画布的高度</param>
-        public Canvas(int width,int height)
+        /// <param name="bg">背景色</param>
+        public Canvas(int width,int height,Color bg)
         {
             bmp = new Bitmap(width, height);
             zero.X = width / 2;
             zero.Y = height / 2;
             timer = new Timer();
+            bgColor = bg;//默认为透明色
+            locked = false;
+            clearCanvas();
         }
 
         /// <summary>
-        /// 清空画布
+        /// 清空画布，使用图层默认背景色填充
         /// </summary>
         public void clearCanvas()
         {
-            bmp = new Bitmap(zero.X * 2, zero.Y * 2);
+            for (int i = 0; i < bmp.Width; i++)
+                for (int j = 0; j < bmp.Height; j++)
+                    bmp.SetPixel(i, j, bgColor);
         }
 
         /// <summary>

@@ -53,6 +53,12 @@
             this.button_setClickFill = new System.Windows.Forms.Button();
             this.button_chooseImage = new System.Windows.Forms.Button();
             this.button_imageFill = new System.Windows.Forms.Button();
+            this.button_createLayer = new System.Windows.Forms.Button();
+            this.listBox_layers = new System.Windows.Forms.ListBox();
+            this.textBox_selectedLayer = new System.Windows.Forms.TextBox();
+            this.button_deleteLayer = new System.Windows.Forms.Button();
+            this.button_layerUp = new System.Windows.Forms.Button();
+            this.button_layerDown = new System.Windows.Forms.Button();
             this.SuspendLayout();
             // 
             // panel_drawArea
@@ -181,7 +187,7 @@
             this.button_clearCanvas.Name = "button_clearCanvas";
             this.button_clearCanvas.Size = new System.Drawing.Size(90, 32);
             this.button_clearCanvas.TabIndex = 14;
-            this.button_clearCanvas.Text = "清空画布";
+            this.button_clearCanvas.Text = "清空图层内容";
             this.button_clearCanvas.UseVisualStyleBackColor = true;
             this.button_clearCanvas.Click += new System.EventHandler(this.button_clearCanvas_Click);
             // 
@@ -278,11 +284,74 @@
             this.button_imageFill.UseVisualStyleBackColor = true;
             this.button_imageFill.Click += new System.EventHandler(this.buttonImageFill_Click);
             // 
+            // button_createLayer
+            // 
+            this.button_createLayer.Location = new System.Drawing.Point(12, 535);
+            this.button_createLayer.Name = "button_createLayer";
+            this.button_createLayer.Size = new System.Drawing.Size(121, 33);
+            this.button_createLayer.TabIndex = 25;
+            this.button_createLayer.Text = "新建透明图层";
+            this.button_createLayer.UseVisualStyleBackColor = true;
+            this.button_createLayer.Click += new System.EventHandler(this.button_createLayer_Click);
+            // 
+            // listBox_layers
+            // 
+            this.listBox_layers.FormattingEnabled = true;
+            this.listBox_layers.ItemHeight = 12;
+            this.listBox_layers.Location = new System.Drawing.Point(139, 535);
+            this.listBox_layers.Name = "listBox_layers";
+            this.listBox_layers.Size = new System.Drawing.Size(160, 136);
+            this.listBox_layers.TabIndex = 26;
+            this.listBox_layers.SelectedIndexChanged += new System.EventHandler(this.listBox_layers_SelectedIndexChanged);
+            // 
+            // textBox_selectedLayer
+            // 
+            this.textBox_selectedLayer.Location = new System.Drawing.Point(305, 535);
+            this.textBox_selectedLayer.Name = "textBox_selectedLayer";
+            this.textBox_selectedLayer.Size = new System.Drawing.Size(100, 21);
+            this.textBox_selectedLayer.TabIndex = 27;
+            // 
+            // button_deleteLayer
+            // 
+            this.button_deleteLayer.Location = new System.Drawing.Point(12, 574);
+            this.button_deleteLayer.Name = "button_deleteLayer";
+            this.button_deleteLayer.Size = new System.Drawing.Size(121, 33);
+            this.button_deleteLayer.TabIndex = 28;
+            this.button_deleteLayer.Text = "删除图层";
+            this.button_deleteLayer.UseVisualStyleBackColor = true;
+            this.button_deleteLayer.Click += new System.EventHandler(this.button_deleteLayer_Click);
+            // 
+            // button_layerUp
+            // 
+            this.button_layerUp.Location = new System.Drawing.Point(12, 613);
+            this.button_layerUp.Name = "button_layerUp";
+            this.button_layerUp.Size = new System.Drawing.Size(58, 33);
+            this.button_layerUp.TabIndex = 29;
+            this.button_layerUp.Text = "上移";
+            this.button_layerUp.UseVisualStyleBackColor = true;
+            this.button_layerUp.Click += new System.EventHandler(this.button_layerUp_Click);
+            // 
+            // button_layerDown
+            // 
+            this.button_layerDown.Location = new System.Drawing.Point(75, 613);
+            this.button_layerDown.Name = "button_layerDown";
+            this.button_layerDown.Size = new System.Drawing.Size(58, 33);
+            this.button_layerDown.TabIndex = 30;
+            this.button_layerDown.Text = "下移";
+            this.button_layerDown.UseVisualStyleBackColor = true;
+            this.button_layerDown.Click += new System.EventHandler(this.button_layerDown_Click);
+            // 
             // mainFrm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(943, 541);
+            this.ClientSize = new System.Drawing.Size(943, 671);
+            this.Controls.Add(this.button_layerDown);
+            this.Controls.Add(this.button_layerUp);
+            this.Controls.Add(this.button_deleteLayer);
+            this.Controls.Add(this.textBox_selectedLayer);
+            this.Controls.Add(this.listBox_layers);
+            this.Controls.Add(this.button_createLayer);
             this.Controls.Add(this.button_imageFill);
             this.Controls.Add(this.button_chooseImage);
             this.Controls.Add(this.button_setClickFill);
@@ -344,6 +413,12 @@
         private System.Windows.Forms.Button button_setClickFill;
         private System.Windows.Forms.Button button_chooseImage;
         private System.Windows.Forms.Button button_imageFill;
+        private System.Windows.Forms.Button button_createLayer;
+        private System.Windows.Forms.ListBox listBox_layers;
+        private System.Windows.Forms.TextBox textBox_selectedLayer;
+        private System.Windows.Forms.Button button_deleteLayer;
+        private System.Windows.Forms.Button button_layerUp;
+        private System.Windows.Forms.Button button_layerDown;
     }
 }
 
