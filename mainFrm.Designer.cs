@@ -59,6 +59,13 @@
             this.button_deleteLayer = new System.Windows.Forms.Button();
             this.button_layerUp = new System.Windows.Forms.Button();
             this.button_layerDown = new System.Windows.Forms.Button();
+            this.label5 = new System.Windows.Forms.Label();
+            this.button_drawSelection = new System.Windows.Forms.Button();
+            this.button_getSelection = new System.Windows.Forms.Button();
+            this.button_showSelection = new System.Windows.Forms.Button();
+            this.button_fillSelection = new System.Windows.Forms.Button();
+            this.button_clearSelection = new System.Windows.Forms.Button();
+            this.button_hideLayer = new System.Windows.Forms.Button();
             this.SuspendLayout();
             // 
             // panel_drawArea
@@ -130,7 +137,7 @@
             // 
             // button_chooseColor
             // 
-            this.button_chooseColor.Location = new System.Drawing.Point(631, 459);
+            this.button_chooseColor.Location = new System.Drawing.Point(631, 429);
             this.button_chooseColor.Name = "button_chooseColor";
             this.button_chooseColor.Size = new System.Drawing.Size(188, 32);
             this.button_chooseColor.TabIndex = 8;
@@ -165,7 +172,7 @@
             // 
             this.button_bucket4.Location = new System.Drawing.Point(653, 223);
             this.button_bucket4.Name = "button_bucket4";
-            this.button_bucket4.Size = new System.Drawing.Size(141, 32);
+            this.button_bucket4.Size = new System.Drawing.Size(125, 32);
             this.button_bucket4.TabIndex = 12;
             this.button_bucket4.Text = "4连通递归填充";
             this.button_bucket4.UseVisualStyleBackColor = true;
@@ -175,7 +182,7 @@
             // 
             this.button_bucket8.Location = new System.Drawing.Point(653, 261);
             this.button_bucket8.Name = "button_bucket8";
-            this.button_bucket8.Size = new System.Drawing.Size(141, 32);
+            this.button_bucket8.Size = new System.Drawing.Size(125, 32);
             this.button_bucket8.TabIndex = 13;
             this.button_bucket8.Text = "8连通递归填充";
             this.button_bucket8.UseVisualStyleBackColor = true;
@@ -183,17 +190,17 @@
             // 
             // button_clearCanvas
             // 
-            this.button_clearCanvas.Location = new System.Drawing.Point(631, 497);
+            this.button_clearCanvas.Location = new System.Drawing.Point(307, 601);
             this.button_clearCanvas.Name = "button_clearCanvas";
             this.button_clearCanvas.Size = new System.Drawing.Size(90, 32);
             this.button_clearCanvas.TabIndex = 14;
-            this.button_clearCanvas.Text = "清空图层内容";
+            this.button_clearCanvas.Text = "清空图层";
             this.button_clearCanvas.UseVisualStyleBackColor = true;
             this.button_clearCanvas.Click += new System.EventHandler(this.button_clearCanvas_Click);
             // 
             // button_output
             // 
-            this.button_output.Location = new System.Drawing.Point(729, 497);
+            this.button_output.Location = new System.Drawing.Point(841, 607);
             this.button_output.Name = "button_output";
             this.button_output.Size = new System.Drawing.Size(90, 32);
             this.button_output.TabIndex = 15;
@@ -205,7 +212,7 @@
             // 
             this.button_bucketScan.Location = new System.Drawing.Point(653, 299);
             this.button_bucketScan.Name = "button_bucketScan";
-            this.button_bucketScan.Size = new System.Drawing.Size(141, 32);
+            this.button_bucketScan.Size = new System.Drawing.Size(125, 32);
             this.button_bucketScan.TabIndex = 16;
             this.button_bucketScan.Text = "扫描线转换填充";
             this.button_bucketScan.UseVisualStyleBackColor = true;
@@ -266,7 +273,7 @@
             // 
             // button_chooseImage
             // 
-            this.button_chooseImage.Location = new System.Drawing.Point(631, 421);
+            this.button_chooseImage.Location = new System.Drawing.Point(631, 391);
             this.button_chooseImage.Name = "button_chooseImage";
             this.button_chooseImage.Size = new System.Drawing.Size(188, 32);
             this.button_chooseImage.TabIndex = 23;
@@ -276,9 +283,9 @@
             // 
             // button_imageFill
             // 
-            this.button_imageFill.Location = new System.Drawing.Point(653, 337);
+            this.button_imageFill.Location = new System.Drawing.Point(798, 261);
             this.button_imageFill.Name = "button_imageFill";
-            this.button_imageFill.Size = new System.Drawing.Size(141, 32);
+            this.button_imageFill.Size = new System.Drawing.Size(125, 32);
             this.button_imageFill.TabIndex = 24;
             this.button_imageFill.Text = "图像填充";
             this.button_imageFill.UseVisualStyleBackColor = true;
@@ -300,15 +307,15 @@
             this.listBox_layers.ItemHeight = 12;
             this.listBox_layers.Location = new System.Drawing.Point(139, 535);
             this.listBox_layers.Name = "listBox_layers";
-            this.listBox_layers.Size = new System.Drawing.Size(160, 136);
+            this.listBox_layers.Size = new System.Drawing.Size(160, 112);
             this.listBox_layers.TabIndex = 26;
             this.listBox_layers.SelectedIndexChanged += new System.EventHandler(this.listBox_layers_SelectedIndexChanged);
             // 
             // textBox_selectedLayer
             // 
-            this.textBox_selectedLayer.Location = new System.Drawing.Point(305, 535);
+            this.textBox_selectedLayer.Location = new System.Drawing.Point(364, 535);
             this.textBox_selectedLayer.Name = "textBox_selectedLayer";
-            this.textBox_selectedLayer.Size = new System.Drawing.Size(100, 21);
+            this.textBox_selectedLayer.Size = new System.Drawing.Size(88, 21);
             this.textBox_selectedLayer.TabIndex = 27;
             // 
             // button_deleteLayer
@@ -341,11 +348,87 @@
             this.button_layerDown.UseVisualStyleBackColor = true;
             this.button_layerDown.Click += new System.EventHandler(this.button_layerDown_Click);
             // 
+            // label5
+            // 
+            this.label5.AutoSize = true;
+            this.label5.Location = new System.Drawing.Point(305, 538);
+            this.label5.Name = "label5";
+            this.label5.Size = new System.Drawing.Size(53, 12);
+            this.label5.TabIndex = 31;
+            this.label5.Text = "当前图层";
+            // 
+            // button_drawSelection
+            // 
+            this.button_drawSelection.Location = new System.Drawing.Point(631, 496);
+            this.button_drawSelection.Name = "button_drawSelection";
+            this.button_drawSelection.Size = new System.Drawing.Size(90, 33);
+            this.button_drawSelection.TabIndex = 32;
+            this.button_drawSelection.Text = "绘制选区";
+            this.button_drawSelection.UseVisualStyleBackColor = true;
+            this.button_drawSelection.Click += new System.EventHandler(this.button_drawSelection_Click);
+            // 
+            // button_getSelection
+            // 
+            this.button_getSelection.Location = new System.Drawing.Point(631, 535);
+            this.button_getSelection.Name = "button_getSelection";
+            this.button_getSelection.Size = new System.Drawing.Size(90, 33);
+            this.button_getSelection.TabIndex = 33;
+            this.button_getSelection.Text = "魔棒工具";
+            this.button_getSelection.UseVisualStyleBackColor = true;
+            this.button_getSelection.Click += new System.EventHandler(this.button_getSelection_Click);
+            // 
+            // button_showSelection
+            // 
+            this.button_showSelection.Location = new System.Drawing.Point(733, 535);
+            this.button_showSelection.Name = "button_showSelection";
+            this.button_showSelection.Size = new System.Drawing.Size(90, 33);
+            this.button_showSelection.TabIndex = 34;
+            this.button_showSelection.Text = "显示选区\r\n/取消显示";
+            this.button_showSelection.UseVisualStyleBackColor = true;
+            this.button_showSelection.Click += new System.EventHandler(this.button_showSelection_Click);
+            // 
+            // button_fillSelection
+            // 
+            this.button_fillSelection.Location = new System.Drawing.Point(798, 223);
+            this.button_fillSelection.Name = "button_fillSelection";
+            this.button_fillSelection.Size = new System.Drawing.Size(125, 32);
+            this.button_fillSelection.TabIndex = 35;
+            this.button_fillSelection.Text = "填充选区";
+            this.button_fillSelection.UseVisualStyleBackColor = true;
+            this.button_fillSelection.Click += new System.EventHandler(this.button_fillSelection_Click);
+            // 
+            // button_clearSelection
+            // 
+            this.button_clearSelection.Location = new System.Drawing.Point(733, 496);
+            this.button_clearSelection.Name = "button_clearSelection";
+            this.button_clearSelection.Size = new System.Drawing.Size(90, 33);
+            this.button_clearSelection.TabIndex = 36;
+            this.button_clearSelection.Text = "清除选区";
+            this.button_clearSelection.UseVisualStyleBackColor = true;
+            this.button_clearSelection.Click += new System.EventHandler(this.button_clearSelection_Click);
+            // 
+            // button_hideLayer
+            // 
+            this.button_hideLayer.Location = new System.Drawing.Point(307, 562);
+            this.button_hideLayer.Name = "button_hideLayer";
+            this.button_hideLayer.Size = new System.Drawing.Size(90, 33);
+            this.button_hideLayer.TabIndex = 37;
+            this.button_hideLayer.Text = "隐藏图层";
+            this.button_hideLayer.UseVisualStyleBackColor = true;
+            this.button_hideLayer.Click += new System.EventHandler(this.button_hideLayer_Click);
+            // 
             // mainFrm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(943, 671);
+            this.ClientSize = new System.Drawing.Size(943, 651);
+            this.Controls.Add(this.button_hideLayer);
+            this.Controls.Add(this.button_clearSelection);
+            this.Controls.Add(this.button_fillSelection);
+            this.Controls.Add(this.button_showSelection);
+            this.Controls.Add(this.button_getSelection);
+            this.Controls.Add(this.button_drawSelection);
+            this.Controls.Add(this.label5);
             this.Controls.Add(this.button_layerDown);
             this.Controls.Add(this.button_layerUp);
             this.Controls.Add(this.button_deleteLayer);
@@ -419,6 +502,13 @@
         private System.Windows.Forms.Button button_deleteLayer;
         private System.Windows.Forms.Button button_layerUp;
         private System.Windows.Forms.Button button_layerDown;
+        private System.Windows.Forms.Label label5;
+        private System.Windows.Forms.Button button_drawSelection;
+        private System.Windows.Forms.Button button_getSelection;
+        private System.Windows.Forms.Button button_showSelection;
+        private System.Windows.Forms.Button button_fillSelection;
+        private System.Windows.Forms.Button button_clearSelection;
+        private System.Windows.Forms.Button button_hideLayer;
     }
 }
 

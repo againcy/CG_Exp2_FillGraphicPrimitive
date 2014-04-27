@@ -66,6 +66,22 @@ namespace CG_Exp2_FillGraphicPrimitive
         private Timer timer;//秒表
 
         /// <summary>
+        /// 图层的名字
+        /// </summary>
+        public string Name
+        {
+            get
+            {
+                return name;
+            }
+            set
+            {
+                name = value;
+            }
+        }
+        private string name;
+
+        /// <summary>
         /// 图层默认背景色
         /// </summary>
         public Color BGColor
@@ -98,6 +114,21 @@ namespace CG_Exp2_FillGraphicPrimitive
         private bool locked;
 
         /// <summary>
+        /// 图层是否隐藏
+        /// </summary>
+        public bool Hidden
+        {
+            get
+            {
+                return hidden;
+            }
+            set
+            {
+                hidden = value;
+            }
+        }
+        private bool hidden;
+        /// <summary>
         /// 主绘图区
         /// </summary>
         public Bitmap Bmp
@@ -112,22 +143,6 @@ namespace CG_Exp2_FillGraphicPrimitive
             }
         }
         private Bitmap bmp;//表示要画到panel控件中的图
-        
-        /// <summary>
-        /// 待填充的图像
-        /// </summary>
-        public Bitmap FillImgae
-        {
-            get
-            {
-                return fillImage;
-            }
-            set
-            {
-                fillImage = value;
-            }
-        }
-        private Bitmap fillImage;//需要填充的图像
 
         /// <summary>
         /// 构造函数，输入画布的宽度和高度
@@ -135,7 +150,7 @@ namespace CG_Exp2_FillGraphicPrimitive
         /// <param name="width">画布的宽度</param>
         /// <param name="height">画布的高度</param>
         /// <param name="bg">背景色</param>
-        public Canvas(int width,int height,Color bg)
+        public Canvas(int width,int height,Color bg, string str)
         {
             bmp = new Bitmap(width, height);
             zero.X = width / 2;
@@ -143,6 +158,8 @@ namespace CG_Exp2_FillGraphicPrimitive
             timer = new Timer();
             bgColor = bg;//默认为透明色
             locked = false;
+            hidden = false;
+            name = str;
             clearCanvas();
         }
 
@@ -391,6 +408,132 @@ namespace CG_Exp2_FillGraphicPrimitive
                 }
             }
             MessageBox.Show("填充完毕，队列最大长度为:" + max.ToString() + "\n用时:" + timer.stop().ToString("f3")+"秒");
+        }
+
+        /// <summary>
+        /// 获取以当前点为种子点的相同（相似）颜色区域（魔棒工具），采用4连通算法
+        /// </summary>
+        /// <param name="start">种子点</param>
+        /// <returns>一张与本图层大小相同的bmp图像，选区为深蓝色(DarkBlue)，其余为默认透明色</returns>
+        public Bitmap getSelection(Point start)
+        {
+            Bitmap selection = new Bitmap(this.bmp.Width,this.bmp.Height);
+            //判断点是否加入过队列
+            bool[,] addedQueue = new bool[bmp.Width + 5, bmp.Height + 5];
+            for (int i = 0; i < bmp.Width + 5; i++)
+                for (int j = 0; j < bmp.Height + 5; j++) addedQueue[i, j] = false;
+            Queue<Point> pointList = new Queue<Point>();
+            pointList.Enqueue(start);
+            Point cur, next;
+            Color model = bmp.GetPixel(start.X + zero.X, zero.Y - start.Y);
+            int max = 0;//记录队列最长长度
+            while (pointList.Count > 0)
+            {
+                if (pointList.Count > max) max = pointList.Count;
+                cur = pointList.Dequeue();
+                if (canPaintInCanvas(cur, model) == false)
+                {
+                    continue;
+                }
+                selection.SetPixel(cur.X + zero.X, zero.Y - cur.Y, Color.DarkBlue);
+                next = cur;
+                for (int i = 0; i < 4; i++)
+                {
+                    switch (i)
+                    {
+                        case 0: next.X++; break;//右
+                        case 1: next.X--; next.Y++; break;//上
+                        case 2: next.Y--; next.Y--; break;//下
+                        case 3: next.Y++; next.X--; break;//左
+                    };
+                    if (canPaintInCanvas(next, model) == true && addedQueue[next.X + zero.X, zero.Y - next.Y] == false)
+                    {
+                        pointList.Enqueue(next);
+                        addedQueue[next.X + zero.X, zero.Y - next.Y] = true;
+                    }
+                }
+            }
+            return selection;
+        }
+
+        /// <summary>
+        /// 填充选区为指定颜色
+        /// </summary>
+        /// <param name="selection">选区</param>
+        /// <param name="color">待填充的颜色</param>
+        public void fillSelection(Bitmap selection, Color color)
+        {
+            for (int i=0;i<selection.Width;i++)
+                for (int j = 0; j < selection.Height; j++)
+                {
+                    if (selection.GetPixel(i, j).ToArgb() == Color.DarkBlue.ToArgb())
+                    {
+                        bmp.SetPixel(i, j, color);
+                    }
+                }
+        }
+
+        /// <summary>
+        /// 图像填充
+        /// </summary>
+        /// <param name="selection">选区</param>
+        /// <param name="image">待填充的图像</param>
+        public void imageFill(Bitmap selection, Bitmap image)
+        {
+            int i,j;
+            //记录选区
+            bool[,] canPaint = new bool[bmp.Width + 5, bmp.Height + 5];
+            for (i = 0; i < bmp.Width + 5; i++)
+                for (j = 0; j < bmp.Height + 5; j++) canPaint[i, j] = false;
+            //获取选区
+            for (i=0;i<selection.Width;i++)
+                for (j = 0; j < selection.Height; j++)
+                {
+                    if (selection.GetPixel(i, j).ToArgb() == Color.DarkBlue.ToArgb())
+                    {
+                        canPaint[i, j] = true;
+                    }
+                }
+            
+            //填充了图像的背景图层（范围大于选区）
+            Bitmap tmp = new Bitmap(bmp.Width, bmp.Height);
+            //获取左上角的一个选区点
+            for (i = 0; i < bmp.Width; i++)
+            {
+                for (j = 0; j < bmp.Height; j++)
+                {
+                    if (canPaint[i, j] == true)
+                    {
+                        break;
+                    }
+                }
+                if (j < bmp.Height) break;
+            }
+            //填充背景图层
+
+            while (i < bmp.Width)
+            {
+                j = 0;
+                while (j < bmp.Height)
+                {
+                    for (int x = 0; x < image.Width; x++)
+                        for (int y = 0; y < image.Height; y++)
+                        {
+                            if (i + x < tmp.Width && j + y < tmp.Height)
+                            {
+                                tmp.SetPixel(i + x, j + y, image.GetPixel(x, y));
+                            }
+                        }
+                    j = j + image.Height;
+                }
+                i = i + image.Width;
+            }
+            //遍历在选区内的点，将bmp中的像素值替换为背景图层
+            for (i = 0; i < bmp.Width; i++)
+                for (j = 0; j < bmp.Height; j++)
+                {
+                    if (canPaint[i, j] == true) bmp.SetPixel(i, j, tmp.GetPixel(i, j));
+                }
         }
     }
 }

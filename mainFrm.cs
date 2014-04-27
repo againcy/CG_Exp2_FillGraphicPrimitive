@@ -16,10 +16,12 @@ namespace CG_Exp2_FillGraphicPrimitive
     {
         private Point curClick;//记录鼠标点的位置
         private Color curColor;//当前选择的颜色
-        private Point zero;
-        //private Canvas canvasBG; //背景图层
+        private Bitmap curImage;//当前要填充的图像
+        private Point zero;//参考坐标系的原点（位于中心）
+        private bool showSelection;//是否显示选区
         private List<Canvas> layers;//图层
         private Canvas curCanvas;//当前操作的图层
+        private Canvas selectionCanvas;//选区图层
         //private static int MAX_FACTOR = 2;
         //public double[] func;
         
@@ -31,7 +33,7 @@ namespace CG_Exp2_FillGraphicPrimitive
             zero = new Point(panel_drawArea.Width / 2, panel_drawArea.Height / 2);
             //创建背景图层
             Canvas canvasBG;
-            canvasBG = new Canvas(panel_drawArea.Width, panel_drawArea.Height, Color.White);
+            canvasBG = new Canvas(panel_drawArea.Width, panel_drawArea.Height, Color.White, "背景图层");
             canvasBG.Locked = true;
             listBox_layers.Items.Add("背景图层");
             //当前默认颜色设置为黑色
@@ -41,7 +43,11 @@ namespace CG_Exp2_FillGraphicPrimitive
             layers.Add(canvasBG);
             //当前图层默认为背景图层
             curCanvas = canvasBG;
+            textBox_selectedLayer.Text = "背景图层";
             panel_drawArea.Refresh();
+            //创建选区图层
+            selectionCanvas = new Canvas(panel_drawArea.Width, panel_drawArea.Height, Color.Transparent, "选区图层");
+            showSelection = false;
            // func = new double[MAX_FACTOR];
            // for (int i = 0; i < MAX_FACTOR; i++) func[i] = 0 ;
             
@@ -67,7 +73,7 @@ namespace CG_Exp2_FillGraphicPrimitive
                 MessageBox.Show("请输入正确的坐标格式（有且仅有1个整数，无多余字符）！");
                 return;
             }
-
+            if (curCanvas.Name == "选区图层") curColor = Color.Black;
             curCanvas.drawLine_Bresenham(pStart, pEnd, curColor);
             /*
             drawLine_Bresenham(new Point(20,60), new Point(40,-10), curColor);
@@ -87,7 +93,14 @@ namespace CG_Exp2_FillGraphicPrimitive
             //g.DrawLine(pen, new Point(zero.X, 0), new Point(zero.X, panel_drawArea.Height));
             for (int i = 0; i < layers.Count; i++)
             {
-                g.DrawImageUnscaled(layers[i].Bmp, 0, 0);
+                if (layers[i].Hidden == false)
+                {
+                    g.DrawImageUnscaled(layers[i].Bmp, 0, 0);
+                }
+            }
+            if (showSelection == true)
+            {
+                g.DrawImageUnscaled(selectionCanvas.Bmp, 0, 0);
             }
             
             //释放资源
@@ -121,6 +134,11 @@ namespace CG_Exp2_FillGraphicPrimitive
                 MessageBox.Show("请输入正确的坐标格式（有且仅有1个整数，无多余字符）！");
                 return;
             }
+            if (curCanvas.Name == "选区图层")
+            {
+                MessageBox.Show("无法对选区进行操作！");
+                return;
+            }
             curCanvas.recursiveFill(p, curColor, 4);
             panel_drawArea.Refresh();
         }
@@ -137,6 +155,11 @@ namespace CG_Exp2_FillGraphicPrimitive
             catch (Exception)
             {
                 MessageBox.Show("请输入正确的坐标格式（有且仅有1个整数，无多余字符）！");
+                return;
+            }
+            if (curCanvas.Name == "选区图层")
+            {
+                MessageBox.Show("无法对选区进行操作！");
                 return;
             }
             curCanvas.recursiveFill(p, curColor, 8);
@@ -172,6 +195,11 @@ namespace CG_Exp2_FillGraphicPrimitive
             catch (Exception)
             {
                 MessageBox.Show("请输入正确的坐标格式（有且仅有1个整数，无多余字符）！");
+                return;
+            }
+            if (curCanvas.Name == "选区图层")
+            {
+                MessageBox.Show("无法对选区进行操作！");
                 return;
             }
             curCanvas.scanFill(p, curColor);
@@ -222,7 +250,7 @@ namespace CG_Exp2_FillGraphicPrimitive
                 try
                 {
                     string filePath = openBmpDlg.FileName;
-                    curCanvas.FillImgae = new Bitmap(filePath);
+                    curImage = new Bitmap(filePath);
                 }
                 catch (Exception)
                 {
@@ -233,26 +261,33 @@ namespace CG_Exp2_FillGraphicPrimitive
 
         private void buttonImageFill_Click(object sender, EventArgs e)
         {
-
+            if (curImage == null)
+            {
+                MessageBox.Show("请选择填充的图像！");
+                return;
+            }
+            curCanvas.imageFill(selectionCanvas.Bmp, curImage);
+            panel_drawArea.Refresh();
         }
 
         //新建透明图层
         private void button_createLayer_Click(object sender, EventArgs e)
         {
-            Canvas newlayers=new Canvas(panel_drawArea.Width,panel_drawArea.Height,Color.Transparent);
+            string name = "图层" + (listBox_layers.Items.Count).ToString();
+            Canvas newlayers = new Canvas(panel_drawArea.Width, panel_drawArea.Height, Color.Transparent, name);
             layers.Add(newlayers);
-            listBox_layers.Items.Add("图层"+(listBox_layers.Items.Count).ToString());
+            listBox_layers.Items.Add(name);
             panel_drawArea.Refresh();
         }
 
-        //选择图层
+        //当前图层变动
         private void listBox_layers_SelectedIndexChanged(object sender, EventArgs e)
         {
             int index = listBox_layers.SelectedIndex;
             if (index >= 0 && index < listBox_layers.Items.Count)
             {
                 curCanvas = layers[index];
-                textBox_selectedLayer.Text = "图层" + index.ToString();
+                textBox_selectedLayer.Text = listBox_layers.Items[index].ToString();
             }
         }
 
@@ -308,6 +343,66 @@ namespace CG_Exp2_FillGraphicPrimitive
                 layers[index + 1] = tmp2;
                 panel_drawArea.Refresh();
             }
+        }
+
+        //绘制选区
+        private void button_drawSelection_Click(object sender, EventArgs e)
+        {
+            selectionCanvas.clearCanvas();
+            textBox_selectedLayer.Text = "选区图层";
+            curCanvas = selectionCanvas;
+            this.showSelection = true;
+        }
+
+        //获取选区（魔棒）
+        private void button_getSelection_Click(object sender, EventArgs e)
+        {
+            Point p = new Point();
+            try
+            {
+                p.X = int.Parse(textBox_clickX.Text);
+                p.Y = int.Parse(textBox_clickY.Text);
+            }
+            catch (Exception)
+            {
+                MessageBox.Show("无法获取点！");
+                return;
+            }
+            selectionCanvas.Bmp = curCanvas.getSelection(p);
+            showSelection = true;
+            panel_drawArea.Refresh();
+        }
+
+        //切换是否显示选区
+        private void button_showSelection_Click(object sender, EventArgs e)
+        {
+            showSelection = !showSelection;
+            panel_drawArea.Refresh();
+        }
+
+        //填充选区
+        private void button_fillSelection_Click(object sender, EventArgs e)
+        {
+            if (curCanvas.Name == "选区图层")
+            {
+                MessageBox.Show("无法对选区进行操作！");
+                return;
+            }
+            curCanvas.fillSelection(selectionCanvas.Bmp, curColor);
+            panel_drawArea.Refresh();
+        }
+
+        private void button_clearSelection_Click(object sender, EventArgs e)
+        {
+            selectionCanvas.clearCanvas();
+            showSelection = false;
+            panel_drawArea.Refresh();
+        }
+
+        private void button_hideLayer_Click(object sender, EventArgs e)
+        {
+            curCanvas.Hidden = true;
+            panel_drawArea.Refresh();
         }
     }
 }
