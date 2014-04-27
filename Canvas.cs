@@ -119,9 +119,10 @@ namespace CG_Exp2_FillGraphicPrimitive
         }
 
         /// <summary>
-        /// 填充时，判断点是否可以在画布上
+        /// 填充时，判断点是否可以在画布上，包含边界判断
         /// </summary>
         /// <param name="p">点在参考坐标系中的位置</param>
+        /// <param name="model">种子点的颜色</param>
         /// <returns>true:可以; false:不可以</returns>
         private bool canPaintInCanvas(Point p, Color model)
         {
@@ -201,11 +202,6 @@ namespace CG_Exp2_FillGraphicPrimitive
             //int connective = 8;//连通性
             Point cur, next;
             Color model = bmp.GetPixel(start.X + zero.X, zero.Y - start.Y);
-            if (model.ToArgb() == color.ToArgb())
-            {
-                MessageBox.Show("所选颜色和当前点颜色相同");
-                return;
-            }
             int max = 0;//记录队列最长长度
             while (pointList.Count > 0)
             {
@@ -273,17 +269,16 @@ namespace CG_Exp2_FillGraphicPrimitive
 
             //创建队列
             Queue<Point> pointList = new Queue<Point>();
+            //判断点是否加入过队列
+            bool[,] addedQueue = new bool[bmp.Width + 5, bmp.Height + 5];
+            for (int i = 0; i < bmp.Width + 5; i++)
+                for (int j = 0; j < bmp.Height + 5; j++) addedQueue[i, j] = false;
             //起点作为种子点加入队列
             pointList.Enqueue(start);
             Point cur, seed, left, right;
-            bool upBlocked, downBlocked;//上下两行确定种子点时是否遇到不能填充的点
+            bool upBlocked, downBlocked;//上下两行确定种子点时是否遇到不能填充的点，即每一行中，一段连续的可填充的点只需要一个种子点进入队列
             Color model = bmp.GetPixel(start.X + zero.X, zero.Y - start.Y);
             int max = 0;
-            if (model.ToArgb() == color.ToArgb())
-            {
-                MessageBox.Show("所选颜色和当前点颜色相同");
-                return;
-            }
             while (pointList.Count > 0)
             {
                 if (pointList.Count > max) max = pointList.Count;
@@ -295,6 +290,7 @@ namespace CG_Exp2_FillGraphicPrimitive
                 while (canPaintInCanvas(left, model) == true)
                 {
                     drawOnCanvas(left, color);
+                    addedQueue[left.X + zero.X, zero.Y - left.Y] = true;
                     left.X--;
                 }
                 left.X++;
@@ -304,6 +300,7 @@ namespace CG_Exp2_FillGraphicPrimitive
                 while (canPaintInCanvas(right, model) == true)
                 {
                     drawOnCanvas(right, color);
+                    addedQueue[right.X + zero.X, zero.Y - right.Y] = true;
                     right.X++;
                 }
                 right.X--;
@@ -311,15 +308,22 @@ namespace CG_Exp2_FillGraphicPrimitive
                 cur = left;
                 upBlocked = true;
                 downBlocked = true;
+                Point next = new Point();
                 while (cur.X <= right.X)
                 {
                     //上一行
-                    if (canPaintInCanvas(new Point(cur.X, cur.Y + 1), model) == true)
+                    next.X = cur.X;
+                    next.Y = cur.Y + 1;
+                    if (canPaintInCanvas(next, model) == true)
                     {
                         if (upBlocked == true)
                         {
                             upBlocked = false;
-                            pointList.Enqueue(new Point(cur.X, cur.Y + 1));
+                            if (addedQueue[next.X + zero.X, zero.Y - next.Y] == false)
+                            {
+                                pointList.Enqueue(next);
+                                addedQueue[next.X + zero.X, zero.Y - next.Y] = true;
+                            }
                         }
                     }
                     else
@@ -327,12 +331,18 @@ namespace CG_Exp2_FillGraphicPrimitive
                         upBlocked = true;
                     }
                     //下一行
-                    if (canPaintInCanvas(new Point(cur.X, cur.Y - 1), model) == true)
+                    next.X = cur.X;
+                    next.Y = cur.Y - 1;
+                    if (canPaintInCanvas(next, model) == true)
                     {
                         if (downBlocked == true)
                         {
                             downBlocked = false;
-                            pointList.Enqueue(new Point(cur.X, cur.Y - 1));
+                            if (addedQueue[next.X + zero.X, zero.Y - next.Y] == false)
+                            {
+                                pointList.Enqueue(next);
+                                addedQueue[next.X + zero.X, zero.Y - next.Y] = true;
+                            }
                         }
                     }
                     else
