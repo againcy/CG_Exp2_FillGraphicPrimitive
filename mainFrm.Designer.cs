@@ -66,6 +66,13 @@
             this.button_fillSelection = new System.Windows.Forms.Button();
             this.button_clearSelection = new System.Windows.Forms.Button();
             this.button_hideLayer = new System.Windows.Forms.Button();
+            this.textBox_circleCenterX = new System.Windows.Forms.TextBox();
+            this.textBox_circleCenterY = new System.Windows.Forms.TextBox();
+            this.label6 = new System.Windows.Forms.Label();
+            this.button_setClickCenter = new System.Windows.Forms.Button();
+            this.textBox_circleRadius = new System.Windows.Forms.TextBox();
+            this.button_drawCircle = new System.Windows.Forms.Button();
+            this.label7 = new System.Windows.Forms.Label();
             this.SuspendLayout();
             // 
             // panel_drawArea
@@ -245,9 +252,9 @@
             // 
             this.button_setClickStart.Location = new System.Drawing.Point(810, 69);
             this.button_setClickStart.Name = "button_setClickStart";
-            this.button_setClickStart.Size = new System.Drawing.Size(127, 23);
+            this.button_setClickStart.Size = new System.Drawing.Size(100, 23);
             this.button_setClickStart.TabIndex = 20;
-            this.button_setClickStart.Text = "设置为鼠标点击坐标";
+            this.button_setClickStart.Text = "设置为当前坐标";
             this.button_setClickStart.UseVisualStyleBackColor = true;
             this.button_setClickStart.Click += new System.EventHandler(this.button_setClickStart_Click);
             // 
@@ -255,9 +262,9 @@
             // 
             this.button_setClickEnd.Location = new System.Drawing.Point(810, 96);
             this.button_setClickEnd.Name = "button_setClickEnd";
-            this.button_setClickEnd.Size = new System.Drawing.Size(127, 23);
+            this.button_setClickEnd.Size = new System.Drawing.Size(100, 23);
             this.button_setClickEnd.TabIndex = 21;
-            this.button_setClickEnd.Text = "设置为鼠标点击坐标";
+            this.button_setClickEnd.Text = "设置为当前坐标";
             this.button_setClickEnd.UseVisualStyleBackColor = true;
             this.button_setClickEnd.Click += new System.EventHandler(this.button_setClickEnd_Click);
             // 
@@ -265,9 +272,9 @@
             // 
             this.button_setClickFill.Location = new System.Drawing.Point(810, 180);
             this.button_setClickFill.Name = "button_setClickFill";
-            this.button_setClickFill.Size = new System.Drawing.Size(127, 23);
+            this.button_setClickFill.Size = new System.Drawing.Size(100, 23);
             this.button_setClickFill.TabIndex = 22;
-            this.button_setClickFill.Text = "设置为鼠标点击坐标";
+            this.button_setClickFill.Text = "设置为当前坐标";
             this.button_setClickFill.UseVisualStyleBackColor = true;
             this.button_setClickFill.Click += new System.EventHandler(this.button_setClickFill_Click);
             // 
@@ -417,11 +424,77 @@
             this.button_hideLayer.UseVisualStyleBackColor = true;
             this.button_hideLayer.Click += new System.EventHandler(this.button_hideLayer_Click);
             // 
+            // textBox_circleCenterX
+            // 
+            this.textBox_circleCenterX.Location = new System.Drawing.Point(971, 71);
+            this.textBox_circleCenterX.Name = "textBox_circleCenterX";
+            this.textBox_circleCenterX.Size = new System.Drawing.Size(43, 21);
+            this.textBox_circleCenterX.TabIndex = 38;
+            // 
+            // textBox_circleCenterY
+            // 
+            this.textBox_circleCenterY.Location = new System.Drawing.Point(1028, 71);
+            this.textBox_circleCenterY.Name = "textBox_circleCenterY";
+            this.textBox_circleCenterY.Size = new System.Drawing.Size(43, 21);
+            this.textBox_circleCenterY.TabIndex = 39;
+            // 
+            // label6
+            // 
+            this.label6.AutoSize = true;
+            this.label6.Location = new System.Drawing.Point(997, 56);
+            this.label6.Name = "label6";
+            this.label6.Size = new System.Drawing.Size(53, 12);
+            this.label6.TabIndex = 40;
+            this.label6.Text = "圆心坐标";
+            // 
+            // button_setClickCenter
+            // 
+            this.button_setClickCenter.Location = new System.Drawing.Point(971, 96);
+            this.button_setClickCenter.Name = "button_setClickCenter";
+            this.button_setClickCenter.Size = new System.Drawing.Size(100, 23);
+            this.button_setClickCenter.TabIndex = 42;
+            this.button_setClickCenter.Text = "设置为当前坐标";
+            this.button_setClickCenter.UseVisualStyleBackColor = true;
+            this.button_setClickCenter.Click += new System.EventHandler(this.button_setClickCenter_Click);
+            // 
+            // textBox_circleRadius
+            // 
+            this.textBox_circleRadius.Location = new System.Drawing.Point(1006, 126);
+            this.textBox_circleRadius.Name = "textBox_circleRadius";
+            this.textBox_circleRadius.Size = new System.Drawing.Size(65, 21);
+            this.textBox_circleRadius.TabIndex = 43;
+            // 
+            // button_drawCircle
+            // 
+            this.button_drawCircle.Location = new System.Drawing.Point(986, 153);
+            this.button_drawCircle.Name = "button_drawCircle";
+            this.button_drawCircle.Size = new System.Drawing.Size(75, 32);
+            this.button_drawCircle.TabIndex = 45;
+            this.button_drawCircle.Text = "画圆";
+            this.button_drawCircle.UseVisualStyleBackColor = true;
+            this.button_drawCircle.Click += new System.EventHandler(this.button_drawCircle_Click);
+            // 
+            // label7
+            // 
+            this.label7.AutoSize = true;
+            this.label7.Location = new System.Drawing.Point(971, 129);
+            this.label7.Name = "label7";
+            this.label7.Size = new System.Drawing.Size(29, 12);
+            this.label7.TabIndex = 46;
+            this.label7.Text = "半径";
+            // 
             // mainFrm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(943, 651);
+            this.ClientSize = new System.Drawing.Size(1114, 651);
+            this.Controls.Add(this.label7);
+            this.Controls.Add(this.button_drawCircle);
+            this.Controls.Add(this.textBox_circleRadius);
+            this.Controls.Add(this.button_setClickCenter);
+            this.Controls.Add(this.label6);
+            this.Controls.Add(this.textBox_circleCenterY);
+            this.Controls.Add(this.textBox_circleCenterX);
             this.Controls.Add(this.button_hideLayer);
             this.Controls.Add(this.button_clearSelection);
             this.Controls.Add(this.button_fillSelection);
@@ -509,6 +582,13 @@
         private System.Windows.Forms.Button button_fillSelection;
         private System.Windows.Forms.Button button_clearSelection;
         private System.Windows.Forms.Button button_hideLayer;
+        private System.Windows.Forms.TextBox textBox_circleCenterX;
+        private System.Windows.Forms.TextBox textBox_circleCenterY;
+        private System.Windows.Forms.Label label6;
+        private System.Windows.Forms.Button button_setClickCenter;
+        private System.Windows.Forms.TextBox textBox_circleRadius;
+        private System.Windows.Forms.Button button_drawCircle;
+        private System.Windows.Forms.Label label7;
     }
 }
 

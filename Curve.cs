@@ -17,7 +17,7 @@ namespace CG_Exp2_FillGraphicPrimitive
         private struct tagParam { };//决定曲线形状的参数列表
         private tagParam param;
 
-        public abstract Point pointBySymmetry();//根据对称性求点
+        public abstract Point[] pointBySymmetry();//根据对称性求点
         public abstract void getNextDecision();//获取下一个决策参数
         public abstract bool getNextPoint();//获取cur点的下一个点的坐标
         public abstract Point[] curPoint();//获取包含当前的点以及其对称点的点集
@@ -47,6 +47,9 @@ namespace CG_Exp2_FillGraphicPrimitive
          *         |
          *         |
          * */
+        /// <summary>
+        /// 当前点的坐标
+        /// </summary>
         private Point cur;
         /// <summary>
         /// 决策参数
@@ -72,10 +75,8 @@ namespace CG_Exp2_FillGraphicPrimitive
         /// <summary>
         /// 构造函数，传入的参数为起始点横纵坐标、终点横纵坐标，并求出曲线对应在坐标系区域1的对称点
         /// </summary>
-        /// <param name="a">起点横坐标</param>
-        /// <param name="b">起点纵坐标</param>
-        /// <param name="c">终点横坐标</param>
-        /// <param name="d">终点纵坐标</param>
+        /// <param name="pStart">起点坐标</param>
+        /// <param name="pEnd">终点坐标</param>
         public Line(Point pStart,Point pEnd)
         {
             param = new tagParam();
@@ -164,20 +165,21 @@ namespace CG_Exp2_FillGraphicPrimitive
         /// 获得关于当前点的对称点，对于直线来说即是原直线所在区域的对称点
         /// </summary>
         /// <returns></returns>
-        public override Point pointBySymmetry()
+        public override Point[] pointBySymmetry()
         {
-            Point ret = cur ;
+            Point[] ret = new Point[1] ;
+            ret[0] = cur;
             int tmp;
             if (area == 1) return ret;
             if (area == 2 || area == 3)
             {
-                tmp = ret.X;
-                ret.X = ret.Y;
-                ret.Y = tmp;
+                tmp = ret[0].X;
+                ret[0].X = ret[0].Y;
+                ret[0].Y = tmp;
             }
             if (area == 3 || area == 4)
             {
-                ret.X = -1 * ret.X;
+                ret[0].X = -1 * ret[0].X;
             }
             return ret;
         }
@@ -211,7 +213,140 @@ namespace CG_Exp2_FillGraphicPrimitive
         public override Point[] curPoint()
         {
             Point[] arr = new Point[1];
-            arr[0] = pointBySymmetry();
+            arr = pointBySymmetry();
+            return arr;
+        }
+    }
+
+    /// <summary>
+    /// 圆类
+    /// </summary>
+    class Circle : Curve<double>
+    {
+        /// <summary>
+        /// 当前点的坐标
+        /// </summary>
+        private Point cur;
+        /// <summary>
+        /// 决策参数
+        /// </summary>
+        private double decision_Pk;
+        private struct tagParam
+        {
+            public Point center;
+            public int radius;
+        }
+        /// <summary>
+        /// 参数列表，包含圆心坐标和半径
+        /// </summary>
+        private tagParam param;
+
+        /// <summary>
+        /// 构造函数
+        /// </summary>
+        /// <param name="pCenter">圆心坐标</param>
+        /// <param name="R">半径</param>
+        public Circle(Point pCenter, int R)
+        {
+            param = new tagParam();
+            param.center = pCenter;
+            param.radius = R;
+            cur.X = 0;
+            cur.Y = R;
+            decision_Pk = 5.0 / 4.0 - R;
+        }
+        /// <summary>
+        /// 根据圆的对称性，返回包含8个点的点集
+        /// </summary>
+        /// <returns>8个点</returns>
+        public override Point[] pointBySymmetry()//根据对称性求点
+        {
+            /*0-8为8个八分圆上对应的点的坐标
+             *      \ 4|0 /
+             *       \ | /
+             *     5  \|/  1
+             * -----------------
+             *     6  /|\  2
+             *       / | \
+             *      / 7|3 \
+             * */
+            
+            int tmp;
+            Point[] pArr = new Point[8];
+            {
+                pArr[0] = cur;
+            }
+            {
+                pArr[1] = cur;
+                tmp = pArr[1].X;
+                pArr[1].X = pArr[1].Y;
+                pArr[1].Y = tmp;
+            }
+            {
+                pArr[2] = pArr[1];
+                pArr[2].Y = -1 * pArr[2].Y;
+            }
+            {
+                pArr[3] = pArr[0];
+                pArr[3].Y = -1 * pArr[3].Y;
+            }
+            for (int i = 4; i <= 7; i++)
+            {
+                pArr[i] = pArr[i - 4];
+                pArr[i].X = -1 * pArr[i].X;
+            }
+            return pArr;
+        }
+        public override void getNextDecision()//获取下一个决策参数
+        {
+            if (decision_Pk < 0)
+            {
+                decision_Pk = decision_Pk + 2 * cur.X + 1;
+            }
+            else
+            {
+                decision_Pk = decision_Pk + 2 * cur.X + 1 - 2 * cur.Y;
+            }
+        }
+        /// <summary>
+        /// 获取下一个点
+        /// </summary>
+        /// <returns>true:成功获取;false:圆已生成完毕</returns>
+        public override bool getNextPoint()
+        {
+            if (cur.X >= cur.Y)
+            {
+                return false;
+            }
+            else
+            {
+                if (decision_Pk < 0)
+                {
+                    cur.X++;
+                }
+                else
+                {
+                    cur.X++;
+                    cur.Y--;
+                }
+                getNextDecision();
+                return true;
+            }
+        }
+
+        /// <summary>
+        /// 获取包含当前的点以及其对称点的点集，并平移至圆心为center的圆的位置
+        /// </summary>
+        /// <returns>圆心在center的圆上的点</returns>
+        public override Point[] curPoint()
+        {
+            Point[] arr = new Point[8];
+            arr = pointBySymmetry();
+            for (int i = 0; i < 8; i++)
+            {
+                arr[i].X += param.center.X;
+                arr[i].Y += param.center.Y;
+            }
             return arr;
         }
     }

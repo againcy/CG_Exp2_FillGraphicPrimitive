@@ -63,6 +63,7 @@ namespace CG_Exp2_FillGraphicPrimitive
     {
         private Point zero; //坐标系的(0,0)在panel中的位置
         private Line line;//直线
+        private Circle circle;//圆
         private Timer timer;//秒表
 
         /// <summary>
@@ -226,6 +227,28 @@ namespace CG_Exp2_FillGraphicPrimitive
             while (line.getNextPoint() == true)
             {
                 foreach (Point cur in line.curPoint())
+                {
+                    drawOnCanvas(cur, color);
+                }
+            }
+        }
+
+        /// <summary>
+        /// 对当前输入的参数使用bresenham算法画圆
+        /// </summary>
+        /// <param name="center">圆心坐标</param>
+        /// <param name="R">半径</param>
+        /// <param name="color">颜色</param>
+        public void drawCircle_Bresenham(Point center, int R, Color color)
+        {
+            circle = new Circle(center, R);
+            foreach (Point cur in circle.curPoint())
+            {
+                drawOnCanvas(cur, color);
+            }
+            while (circle.getNextPoint() == true)
+            {
+                foreach (Point cur in circle.curPoint())
                 {
                     drawOnCanvas(cur, color);
                 }

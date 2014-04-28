@@ -392,6 +392,7 @@ namespace CG_Exp2_FillGraphicPrimitive
             panel_drawArea.Refresh();
         }
 
+        //清除选区
         private void button_clearSelection_Click(object sender, EventArgs e)
         {
             selectionCanvas.clearCanvas();
@@ -399,9 +400,42 @@ namespace CG_Exp2_FillGraphicPrimitive
             panel_drawArea.Refresh();
         }
 
+        //隐藏图层
         private void button_hideLayer_Click(object sender, EventArgs e)
         {
             curCanvas.Hidden = true;
+            panel_drawArea.Refresh();
+        }
+
+        //设置圆心坐标
+        private void button_setClickCenter_Click(object sender, EventArgs e)
+        {
+            textBox_circleCenterX.Text = textBox_clickX.Text;
+            textBox_circleCenterY.Text = textBox_clickY.Text;
+        }
+
+        //画圆
+        private void button_drawCircle_Click(object sender, EventArgs e)
+        {
+            Point center;
+            int R;
+            try
+            {
+                center = new Point(int.Parse(textBox_circleCenterX.Text), int.Parse(textBox_circleCenterY.Text));
+                R = int.Parse(textBox_circleRadius.Text);
+            }
+            catch (Exception)
+            {
+                MessageBox.Show("请输入正确的坐标格式（有且仅有1个整数，无多余字符） 且半径为整数！");
+                return;
+            }
+            if (curCanvas.Name == "选区图层") curColor = Color.Black;
+            curCanvas.drawCircle_Bresenham(center, R, curColor);
+            /*
+            drawLine_Bresenham(new Point(20,60), new Point(40,-10), curColor);
+            drawLine_Bresenham(new Point(40,-10), new Point(80,80), curColor);
+            drawLine_Bresenham(new Point(80,80), new Point(50,90), curColor);
+            drawLine_Bresenham(new Point(50,90), new Point(20,60), curColor);*/
             panel_drawArea.Refresh();
         }
     }
